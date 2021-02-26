@@ -39,14 +39,14 @@ unzip_source()
 	# copy
 	cp ${DL}/${BUSYBOX_SOURCE_NAME} ${BUILD}
 	cp ${DL}/${KERNEL_SOURCE_NAME} ${BUILD}
-	cp ${DL}/${XEN_SOURCE_NAME} ${BUILD}
+	#cp ${DL}/${XEN_SOURCE_NAME} ${BUILD}
 	cp ${DL}/${UBOOT_SOURCE_NAME} ${BUILD}
 
 	cd ${BUILD}
 
 	tar -jxv -f ${BUSYBOX_SOURCE_NAME}
 	tar -Jxv -f ${KERNEL_SOURCE_NAME}
-	tar -zxv -f ${XEN_SOURCE_NAME}
+	#tar -zxv -f ${XEN_SOURCE_NAME}
 	tar -jxv -f ${UBOOT_SOURCE_NAME}
 
 }
