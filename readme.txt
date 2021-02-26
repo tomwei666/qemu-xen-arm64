@@ -7,6 +7,9 @@
 ---apt install gcc-aarch64-linux-gnu
 我的环境之前搭建BiscuitOS,已经有gcc-aarch64-linux-gnu和qemu，编译脚本不再有这个。
 
+添加gcc-aarch64-linux-gnu已有的目录:
+CROSS_TOOL=${CROSS_DIR}/aarch64-linux-gnu/bin/aarch64-linux-gnu- 
+
 2. 下载源码，在工程根目录，新建dl，放入源码压缩包如下:
 tom@ubuntu:~/work/BiscuitOS-ALL/BiscuitOS/output/xen-arm64/dl$ ls -al
 total 148840
