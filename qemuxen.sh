@@ -53,6 +53,7 @@ unzip_source()
 create_rootfs()
 {
 	cd ${BUSYBOX_SOURCE_DIR}
+	make ARCH=arm CROSS_COMPILE=${CROSS_TOOL} clean
 	make ARCH=arm CROSS_COMPILE=${CROSS_TOOL} defconfig
 	LINE_NUM=`grep -n "CONFIG_STATIC" .config | awk -F':' '{print $1}'`
 	STATIC_CONTENT="CONFIG_STATIC=y"
