@@ -1,3 +1,11 @@
 domainN.txt
 domain0.txt
 domainN.txt
+build/busybox-1.30.1.tar.bz2
+build/busybox-1.30.1/
+build/linux-4.20.11.tar.xz
+build/linux-4.20.11/
+build/out/
+build/u-boot-2019.01.tar.bz2
+build/u-boot-2019.01/
+
