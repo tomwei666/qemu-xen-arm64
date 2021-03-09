@@ -55,6 +55,8 @@ create_rootfs()
 	cd ${BUSYBOX_SOURCE_DIR}
 	make ARCH=arm CROSS_COMPILE=${CROSS_TOOL} clean
 	make ARCH=arm CROSS_COMPILE=${CROSS_TOOL} defconfig
+
+	# 把 "#CONFIG_DEBUG is not set" 替换成 "CONFIG_STATIC=y"
 	LINE_NUM=`grep -n "CONFIG_STATIC" .config | awk -F':' '{print $1}'`
 	STATIC_CONTENT="CONFIG_STATIC=y"
 	sed -i "$[ LINE_NUM ]c $STATIC_CONTENT" .config
@@ -101,9 +103,53 @@ kernel_compile()
 xen_compile()
 {
 	cd ${XEN_SOURCE_DIR}
-	make dist-xen XEN_TARGET_ARCH=arm64 CROSS_COMPILE=${CROSS_TOOL} -j4
+
+	CONTENT_1="CONFIG_DEBUG"
+	CONTENT_2="CONFIG_DEBUG=y"
+	CONTENT_3="CONFIG_DEBUG_INFO=y"
+	CONTENT_4="CONFIG_FRAME_POINTER=y"
+	CONTENT_5="# CONFIG_COVERAGE is not set"
+	CONTENT_6="# CONFIG_LOCK_PROFILE is not set"
+	CONTENT_7="# CONFIG_PERF_COUNTERS is not set"
+	CONTENT_8="CONFIG_VERBOSE_DEBUG=y"
+	CONTENT_9="CONFIG_DEVICE_TREE_DEBUG=y"
+	CONTENT_10="CONFIG_SCRUB_DEBUG=y"
+
+	CONTENT_11="CONFIG_SCHED_ARINC653"
+	CONTENT_12="CONFIG_SCHED_ARINC653=y"
+
+   if cat xen/.config | grep "$CONTENT_2">/dev/null
+	then
+		echo "No need to make defconfig"
+	else
+		echo "xen make defconfig"
+		make -C xen XEN_TARGET_ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- CONFIG_EARLY_PRINTK=pl011,0x09000000,115200 defconfig
+		echo "Add debug into .config!"
+		LINE_NUM=`grep -n "${CONTENT_1}" xen/.config | awk -F':' '{print $1}'`
+		sed -i "$[ LINE_NUM ]c $CONTENT_2" xen/.config
+		LINE_NUM=`grep -n "${CONTENT_2}" xen/.config | awk -F':' '{print $1}'`
+		sed -i "$[ LINE_NUM ]a $CONTENT_3" xen/.config
+		LINE_NUM=`grep -n "${CONTENT_3}" xen/.config | awk -F':' '{print $1}'`
+		sed -i "$[ LINE_NUM ]a $CONTENT_4" xen/.config
+		LINE_NUM=`grep -n "${CONTENT_4}" xen/.config | awk -F':' '{print $1}'`
+		sed -i "$[ LINE_NUM ]a $CONTENT_5" xen/.config
+		LINE_NUM=`grep -n "${CONTENT_5}" xen/.config | awk -F':' '{print $1}'`
+		sed -i "$[ LINE_NUM ]a $CONTENT_6" xen/.config
+		LINE_NUM=`grep -n "${CONTENT_6}" xen/.config | awk -F':' '{print $1}'`
+		sed -i "$[ LINE_NUM ]a $CONTENT_7" xen/.config
+		LINE_NUM=`grep -n "${CONTENT_7}" xen/.config | awk -F':' '{print $1}'`
+		sed -i "$[ LINE_NUM ]a $CONTENT_8" xen/.config
+		LINE_NUM=`grep -n "${CONTENT_8}" xen/.config | awk -F':' '{print $1}'`
+		sed -i "$[ LINE_NUM ]a $CONTENT_9" xen/.config
+		LINE_NUM=`grep -n "${CONTENT_9}" xen/.config | awk -F':' '{print $1}'`
+		sed -i "$[ LINE_NUM ]a $CONTENT_10" xen/.config
+		LINE_NUM=`grep -n "${CONTENT_11}" xen/.config | awk -F':' '{print $1}'`
+		sed -i "$[ LINE_NUM ]c ${CONTENT_12}" xen/.config
+	fi
+	make XEN_TARGET_ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- CONFIG_EARLY_PRINTK=pl011,0x09000000,115200 dist-xen -j
 	cp xen/xen ${BUILD_TMP}
 }
+
 make_all()
 {
 	create_dir
