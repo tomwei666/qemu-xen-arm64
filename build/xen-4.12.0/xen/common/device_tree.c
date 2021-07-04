@@ -1061,8 +1061,8 @@ int dt_for_each_irq_map(const struct dt_device_node *dev,
     struct dt_raw_irq dt_raw_irq;
     struct dt_irq dt_irq;
 
-    dt_dprintk("%s: par=%s cb=%p data=%p\n", __func__,
-               dev->full_name, cb, data);
+    /*dt_dprintk("%s: par=%s cb=%p data=%p\n", __func__,*/
+               /*dev->full_name, cb, data);*/
 
     ipar = dev;
 
@@ -1086,7 +1086,7 @@ int dt_for_each_irq_map(const struct dt_device_node *dev,
         goto fail;
     }
 
-    dt_dprintk("%s: ipar=%s, size=%d\n", __func__, ipar->full_name, intsize);
+    /*dt_dprintk("%s: ipar=%s, size=%d\n", __func__, ipar->full_name, intsize);*/
 
     if ( intsize > DT_MAX_IRQ_SPEC )
     {
@@ -1107,7 +1107,7 @@ int dt_for_each_irq_map(const struct dt_device_node *dev,
     old = NULL;
     addrsize = (tmp == NULL) ? 2 : be32_to_cpu(*tmp);
 
-    dt_dprintk(" -> addrsize=%d\n", addrsize);
+    /*dt_dprintk(" -> addrsize=%d\n", addrsize);*/
 
     /* Now look for an interrupt-map */
     imap = dt_get_property(dev, "interrupt-map", &imaplen);
@@ -1138,7 +1138,7 @@ int dt_for_each_irq_map(const struct dt_device_node *dev,
             goto fail;
         }
 
-        dt_dprintk(" -> ipar %s\n", dt_node_name(ipar));
+        /*dt_dprintk(" -> ipar %s\n", dt_node_name(ipar));*/
 
         /* Get #interrupt-cells and #address-cells of new
          * parent
@@ -1153,8 +1153,8 @@ int dt_for_each_irq_map(const struct dt_device_node *dev,
         tmp = dt_get_property(ipar, "#address-cells", NULL);
         paddrsize = (tmp == NULL) ? 0 : be32_to_cpu(*tmp);
 
-        dt_dprintk(" -> pintsize=%d, paddrsize=%d\n",
-                   pintsize, paddrsize);
+        /*dt_dprintk(" -> pintsize=%d, paddrsize=%d\n",*/
+                   /*pintsize, paddrsize);*/
 
         if ( pintsize > DT_MAX_IRQ_SPEC )
         {
@@ -1208,7 +1208,7 @@ int dt_for_each_irq_map(const struct dt_device_node *dev,
         imap += pintsize;
         imaplen -= pintsize;
 
-        dt_dprintk(" -> imaplen=%d\n", imaplen);
+        /*dt_dprintk(" -> imaplen=%d\n", imaplen);*/
     }
 
     return 0;
