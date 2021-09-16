@@ -1452,6 +1452,21 @@ static void free_heap_pages(
     {
         mask = 1UL << order;
 
+/* 这是buddy合并算法的核心:
+ * 把页帧号N1挂在order的buddy链表上，从(N1-2^order)的页帧,看是否有order大小的
+ * 页帧可以合并，如果可以合并再找(N1-2^order+2^(order+1))的开始帧，是否
+ * 有(order+1)大小的页帧可以合并。
+ * 总结：先向小合并，再向大前进。
+ * if ( (mfn_x(page_to_mfn(pg)) & mask) ) :这个条件里向小合并
+ * else: 向大前进.
+ *  举个例子:
+ *  向小合并：
+ *  mfn_x(page_to_mfn(pg)=0x40f3f mask=0x1 | mfn_x(page_to_mfn(pg)=0x40f3e mask=0x2
+ *  mfn_x(page_to_mfn(pg)=0x40f3c mask=0x4 | mfn_x(page_to_mfn(pg)=0x40f38 mask=0x8
+ *  mfn_x(page_to_mfn(pg)=0x40f30 mask=0x10| mfn_x(page_to_mfn(pg)=0x40f20 mask=0x20
+ *  向大前进:
+ *  mfn_x(page_to_mfn(pg)=0x40f41 mask=0x1
+ */
         if ( (mfn_x(page_to_mfn(pg)) & mask) )
         {
             struct page_info *predecessor = pg - mask;
