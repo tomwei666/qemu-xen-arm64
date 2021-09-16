@@ -62,6 +62,11 @@ static inline bool list_head_is_null(const struct list_head *list)
  * This is only for internal list manipulation where we know
  * the prev/next entries already!
  */
+/*功能:把new节点，插入prev和next节点之间.
+ *1)把prev的next指向new
+ *2)把new的next指向next，把new的prev指向prev
+ *3)把next->prev指向new
+ */
 static inline void __list_add(struct list_head *new,
                               struct list_head *prev,
                               struct list_head *next)
@@ -80,6 +85,9 @@ static inline void __list_add(struct list_head *new,
  * Insert a new entry after the specified head.
  * This is good for implementing stacks.
  */
+/*功能:把new节点，插入到head链表头.
+ * head->next：插入new节点之前是head指向的第一个数据节点.
+ */
 static inline void list_add(struct list_head *new, struct list_head *head)
 {
     __list_add(new, head, head->next);
@@ -92,6 +100,9 @@ static inline void list_add(struct list_head *new, struct list_head *head)
  *
  * Insert a new entry before the specified head.
  * This is useful for implementing queues.
+ */
+/*功能:把new节点，插入到head链表尾。
+ * head->prev：插入new节点之前是head指向的最后的数据节点.
  */
 static inline void list_add_tail(struct list_head *new, struct list_head *head)
 {

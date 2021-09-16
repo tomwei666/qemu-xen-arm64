@@ -501,11 +501,14 @@ page_list_prev(const struct page_info *page,
 {
     return list_entry(page->list.prev, struct page_info, list);
 }
+
+/*功能:把page->list挂在head链表头第一个.*/
 static inline void
 page_list_add(struct page_info *page, struct page_list_head *head)
 {
     list_add(&page->list, head);
 }
+/*功能:把page->list挂在head链表头最后一个.*/
 static inline void
 page_list_add_tail(struct page_info *page, struct page_list_head *head)
 {
