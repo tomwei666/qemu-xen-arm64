@@ -67,6 +67,7 @@ TYPE_SAFE(unsigned long, mfn);
  * in GCC < 5.0.
  */
 #define INVALID_MFN_INITIALIZER { ~0UL }
+//mfn_t/mfn_x/_mfn的定义 
 
 #ifndef mfn_t
 #define mfn_t /* Grep fodder: mfn_t, _mfn() and mfn_x() are defined above */
