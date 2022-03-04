@@ -2038,6 +2038,9 @@ void __init setup_virt_paging(void)
     val |= VTCR_T0SZ(pa_range_info[pa_range].t0sz);
 
     p2m_root_order = pa_range_info[pa_range].root_order;
+    //sl0: 0b10:start from level 0;0b01:start from level 1;0b00:start from level 2
+    //这样p2m_root_level:就是需要2-sl0
+    //t0sz: 就是指示va range的，大小需要64-t0sz
     p2m_root_level = 2 - pa_range_info[pa_range].sl0;
     p2m_ipa_bits = 64 - pa_range_info[pa_range].t0sz;
 
