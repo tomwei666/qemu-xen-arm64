@@ -817,7 +817,7 @@ static void check_and_stop_scrub(struct page_info *head)
         }
     }
 }
-
+//函数:从_heap中分配到等于或者大于order的page,切割成等于oder的page是在函数alloc_heap_pages中完成.
 static struct page_info *get_free_buddy(unsigned int zone_lo,
                                         unsigned int zone_hi,
                                         unsigned int order, unsigned int memflags,
@@ -911,6 +911,8 @@ static struct page_info *get_free_buddy(unsigned int zone_lo,
 }
 
 /* Allocate 2^@order contiguous pages. */
+// 函数作用：通过调用get_free_buddy获取page,然后通过切割得到请求的order,
+// 返回page.
 static struct page_info *alloc_heap_pages(
     unsigned int zone_lo, unsigned int zone_hi,
     unsigned int order, unsigned int memflags,
@@ -983,6 +985,9 @@ static struct page_info *alloc_heap_pages(
     first_dirty = pg->u.free.first_dirty;
 
     /* We may have to halve the chunk a number of times. */
+    //如果从get_free_buddy获取到page的order大于函数请求的order,
+    //则会把page的order，先切成两个，把前半部分加入到__heap的链表中，
+    //后半部分继续循环，只到后半部的order等于请求的order，返回page.
     while ( buddy_order != order )
     {
         buddy_order--;
