@@ -317,6 +317,7 @@ static int p2m_next_level(struct p2m_domain *p2m, bool read_only,
     int ret;
     mfn_t mfn;
 
+    //1. 根据page table和offset找到entry
     entry = *table + offset;
 
     if ( !p2m_is_valid(*entry) )
@@ -324,6 +325,8 @@ static int p2m_next_level(struct p2m_domain *p2m, bool read_only,
         if ( read_only )
             return GUEST_TABLE_MAP_FAILED;
 
+    //2. 这个entry，有沒有填充下一个page table,如果没有，则分配个page
+    //   table，并把物理地址写道lpae_t中的base阶段.
         ret = p2m_create_table(p2m, entry);
         if ( ret )
             return GUEST_TABLE_MAP_FAILED;
@@ -334,9 +337,11 @@ static int p2m_next_level(struct p2m_domain *p2m, bool read_only,
     if ( p2m_is_mapping(*entry, level) )
         return GUEST_TABLE_SUPER_PAGE;
 
+    //3. 获取到这个entry中对应的下个page table的pfn
     mfn = lpae_get_mfn(*entry);
 
     unmap_domain_page(*table);
+    //4. table赋值为下个page table的虚拟地址
     *table = map_domain_page(mfn);
 
     return GUEST_TABLE_NORMAL_PAGE;
@@ -416,6 +421,7 @@ mfn_t p2m_get_entry(struct p2m_domain *p2m, gfn_t gfn,
             break;
     }
 
+    //执行过上面语句，table指向最后一个page table.
     entry = table[offsets[level]];
 
     if ( p2m_is_valid(entry) )
@@ -424,7 +430,7 @@ mfn_t p2m_get_entry(struct p2m_domain *p2m, gfn_t gfn,
 
         if ( a )
             *a = p2m_mem_access_radix_get(p2m, gfn);
-
+    // 通过entry指向的页表，从这个页表中读出物理地址，然后
         mfn = lpae_get_mfn(entry);
         /*
          * The entry may point to a superpage. Find the MFN associated
@@ -666,6 +672,8 @@ static inline void p2m_remove_pte(lpae_t *p, bool clean_pte)
 }
 
 /* Allocate a new page table page and hook it in via the given entry. */
+//分配一个page，把这个page对应的pfn填充到lpae_t结构体中。
+//把lpae_t写入到指定的page table的entry.
 static int p2m_create_table(struct p2m_domain *p2m, lpae_t *entry)
 {
     struct page_info *page;
